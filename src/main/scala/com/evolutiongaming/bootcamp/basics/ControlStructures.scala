@@ -2,6 +2,9 @@ package com.evolutiongaming.bootcamp.basics
 
 import java.io.FileNotFoundException
 
+import com.evolutiongaming.bootcamp.basics.ControlStructures.ErrorMessage
+import com.evolutiongaming.bootcamp.basics.ControlStructuresHomework2.ErrorMessage
+
 import scala.annotation.tailrec
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
@@ -32,7 +35,15 @@ object ControlStructures {
   // Exercise. Implement a "Fizz-Buzz" https://en.wikipedia.org/wiki/Fizz_buzz function using the if-else,
   // returning "fizzbuzz" for numbers which divide with 15, "fizz" for those which divide by 3 and "buzz" for
   // those which divide with 5, and returning the input number as a string for other numbers:
-  def fizzBuzz1(n: Int): String = ???
+  def fizzBuzz1(n: Int): String = {
+    if (n % 15 == 0) {
+      "fizzbuzz"
+    } else if (n % 3 == 0) {
+      "fizz"
+    } else if (n % 5 == 0) {
+      "buzz"
+    } else n.toString
+  }
 
   // Pattern Matching
   //
@@ -104,8 +115,15 @@ object ControlStructures {
     case rectangle @ Rectangle(width, height) => s"Found a rectangle $rectangle with width $width and height $height."
   }
 
-  // Exercise. Implement a "Fizz-Buzz" function using pattern matching:
-  def fizzBuzz2(n: Int): String = ???
+  // Exercise. Implement a "c" function using pattern matching:
+  def fizzBuzz2(n: Int): String =  {
+    (n % 3, n % 5) match {
+      case (0, 0) => "fizzbuzz"
+      case (_, 0) => "buzz"
+      case (0, _) => "fizz"
+      case (_, _) => n.toString
+    }
+  }
 
   // Recursion
   //
@@ -132,10 +150,11 @@ object ControlStructures {
   // `reduce` or other larger building blocks.
 
   def sum2(list: List[Int]): Int =
-    list.foldLeft(0)((acc, x) => acc + x)
+    list.foldLeft(0)((acc, x) => {println(s"acc=$acc x=$x"); acc + x})
+
 
   def sum3(list: List[Int]): Int =
-    list.foldRight(0)((x, acc) => acc + x)
+    list.foldRight(0)((x, acc) => {println(s"acc=$acc x=$x"); acc + x})
 
   def sum4(list: List[Int]): Int =
     if (list.isEmpty) 0
@@ -149,14 +168,20 @@ object ControlStructures {
   //
   // Thus `applyNTimesForInts(_ + 1, 4)(3)` should return `((((3 + 1) + 1) + 1) + 1)` or `7`.
   def applyNTimesForInts(f: Int => Int, n: Int): Int => Int = { x: Int =>
-    f(x + n) // replace with a correct implementation
+    if (n == 1) {
+      f(x)
+    } else {
+      applyNTimesForInts(f(_), n - 1)(f(x))
+    }
   }
 
   // Exercise: Convert the function `applyNTimesForInts` into a polymorphic function `applyNTimes`:
   def applyNTimes[A](f: A => A, n: Int): A => A = { x: A =>
-    // replace with correct implementation
-    println(n)
-    f(x)
+    if (n == 1) {
+      f(x)
+    } else {
+      applyNTimes[A](f(_), n - 1)(f(x))
+    }
   }
 
   // `map`, `flatMap` and `filter` are not control structures, but methods that various collections (and
@@ -275,7 +300,19 @@ object ControlStructures {
     // amount, respectively):
     println(s"$service, $fromUserWithName, $toUserWithName, $amount")
     import service._
-    ???
+    //TODO fix it
+    service.validateAmount(amount)
+    val fromAccount = service.findUserId(fromUserWithName).flatMap { userId =>
+      service.findBalance(userId).flatMap { balance =>
+        service.updateAccount(userId, balance, -amount)
+      }
+    }
+    val toAccount = service.findUserId(toUserWithName).flatMap { userId =>
+      service.findBalance(userId).flatMap { balance =>
+        service.updateAccount(userId, balance, amount)
+      }
+    }
+    Right(fromAccount.toOption.get, toAccount.toOption.get)
   }
 
   // Question. What are the questions would you ask - especially about requirements - before implementing
@@ -295,7 +332,12 @@ object ControlStructures {
   //
   // Use a "for comprehension" in your solution.
 
-  val AProductB: Set[(Int, Boolean)] = Set()
+  val AProductB: Set[(Int, Boolean)] = {
+    for {
+      a <- Set(0, 1, 2)
+      b <- Set(true, false)
+    } yield (a, b)
+  }
 
   // Exercise:
   //
@@ -307,6 +349,7 @@ object ControlStructures {
   //
   // Use "map" and `++` (`Set` union operation) in your solution.
 
+  //TODO complete
   val ASumB: Set[Either[Int, Boolean]] = Set()
 
   // Scala inherits the standard try-catch-finally construct from Java:

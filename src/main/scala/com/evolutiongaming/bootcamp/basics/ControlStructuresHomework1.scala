@@ -9,14 +9,30 @@ object ControlStructuresHomework1 {
   // return error message "$age is too high, are you human?" if age is higher than 150
   // return error message "$age is negative, we do not serve unborn people" if age is lower than 0
   // use if-else
-  def isAdultIf(age: Int): Either[Error, Boolean] = ???
+  def isAdultIf(age: Int): Either[Error, Boolean] = {
+    if (age > 150) {
+      Left("$age is too high, are you human?")
+    } else if (age < 0) {
+      Left("$age is negative, we do not serve unborn people")
+    } else {
+      Right(age > 18)
+    }
+  }
 
   // same as isAdultIf, but use match statement instead
-  def isAdultMatch(age: Int): Either[Error, Boolean] = ???
+  def isAdultMatch(age: Int): Either[Error, Boolean] = {
+    age match {
+      case age if age > 150 => Left("$age is too high, are you human?")
+      case age if age < 0 => Left("$age is negative, we do not serve unborn people")
+      case _ => Right(age > 18)
+    }
+  }
 
   // https://en.wikipedia.org/wiki/Triangle_inequality
   // can you do it without using any control structures?
-  def isValidTriangle(a: Double, b: Double, c: Double): Boolean = ???
+  def isValidTriangle(a: Double, b: Double, c: Double): Boolean = {
+    (a + b < c) && (a + c < b) && (b + c < a)
+  }
 
   // IT company located in Wakanda is searching for a new programmer. Due to high interest it needs
   // a way to filter out candidates that are not suitable for this job.
@@ -40,5 +56,32 @@ object ControlStructuresHomework1 {
     yearsOfExperience: Int,
     hasEducation: Boolean,
     starsOnGithub: Int
-  ): Boolean = ???
+  ): Boolean = {
+    var result = 0
+    if (yearsOfExperience > 5) {
+      result += 5
+    } else {
+      result += yearsOfExperience
+    }
+    if (hasEducation) {
+      result += 3
+    }
+    if (passedTests < 5) {
+      false
+    } else {
+      result += passedTests
+    }
+    country match {
+      case "Wakanda" => result += 3
+      case "Narnia" | "Skyrim" | "Amestris" => result += 1
+    }
+
+    starsOnGithub match {
+      case stars if stars > 1000 => result += 3
+      case stars if stars > 100 => result += 2
+      case stars if stars > 10 => result += 1
+    }
+
+    result >= 10
+  }
 }

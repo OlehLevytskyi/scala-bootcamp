@@ -1,6 +1,6 @@
 package com.evolutiongaming.bootcamp.basics
 
-import ControlStructures._
+import ControlStructures.{a, b, _}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers._
 import org.scalacheck.Gen._
@@ -88,7 +88,7 @@ class ControlStructuresSpec extends AnyFlatSpec with ScalaCheckDrivenPropertyChe
     val obtained = for {
       _       <- service.updateAccount("a", 200)
       _       <- service.updateAccount("b", 25)
-      result  <- makeTransfer(service, "a", "b", 50)
+      result  <- makeTransfer(service, "a", "b", -50)
     } yield result
     obtained shouldEqual Right((150, 75))
   }
@@ -102,7 +102,7 @@ class ControlStructuresSpec extends AnyFlatSpec with ScalaCheckDrivenPropertyChe
     } yield result
     obtained shouldEqual Right((3, 27))
   }
-
+6
   it should "detect incorrect userIds" in {
     val service = new TestUserService
     val obtained = makeTransfer(service, "invalid", "valid", 50)
@@ -127,4 +127,27 @@ class ControlStructuresSpec extends AnyFlatSpec with ScalaCheckDrivenPropertyChe
     )
   }
 
+  "monthName" should "works correct" in {
+    monthName(1) shouldEqual(Right("January"))
+    monthName(2) shouldEqual(Right("February"))
+    monthName(3) shouldEqual(Right("March"))
+    monthName(4) shouldEqual(Right("April"))
+    monthName(5) shouldEqual(Right("May"))
+    monthName(6) shouldEqual(Right("June"))
+    monthName(7) shouldEqual(Right("July"))
+    monthName(8) shouldEqual(Right("August"))
+    monthName(9) shouldEqual(Right("September"))
+    monthName(10) shouldEqual(Right("October"))
+    monthName(11) shouldEqual(Right("November"))
+    monthName(12) shouldEqual(Right("December"))
+    monthName(0) shouldEqual(Left(s"Month 0 is too small"))
+    monthName(13) shouldEqual(Left(s"Month 13 is too large"))
+  }
+
+  "recursiveSum" should "works correct" in {
+    sum1(List(1, 2, 3)) shouldEqual(6)
+    sum1(List(10)) shouldEqual(10)
+    sum2(List(1, 2, 3)) shouldEqual(6)
+    sum3(List(1, 2, 3)) shouldEqual(6)
+  }
 }
