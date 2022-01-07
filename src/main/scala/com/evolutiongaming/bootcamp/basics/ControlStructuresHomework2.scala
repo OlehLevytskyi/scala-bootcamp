@@ -1,5 +1,7 @@
 package com.evolutiongaming.bootcamp.basics
 
+import com.evolutiongaming.bootcamp.basics.ControlStructuresHomework2.Command.{Average, Divide, Max, Min, Sum}
+
 import scala.io.Source
 
 object ControlStructuresHomework2 {
@@ -45,7 +47,15 @@ object ControlStructuresHomework2 {
   final case class ChangeMe(value: String) extends Result
 
   def parseCommand(x: String): Either[ErrorMessage, Command] = {
-    ??? // implement this method
+    val parsedCommand: Array[String] = x.split(" ")
+    parsedCommand[0] match {
+      case "divide" => Right(Divide(parsedCommand[1].toString().toDouble, parsedCommand[2].toString().toDouble))
+      case "sum" => Right(Sum(parsedCommand.slice(1, parsedCommand.length - 1).map(_.toDouble).toList))
+      case "average" => Right(Average(parsedCommand.slice(1, parsedCommand.length - 1).map(_.toDouble).toList))
+      case "min" => Right(Min(parsedCommand.slice(1, parsedCommand.length - 1).map(_.toDouble).toList))
+      case "max" => Right(Max(parsedCommand.slice(1, parsedCommand.length - 1).map(_.toDouble).toList))
+    }
+    // implement this method
     // Implementation hints:
     // You can use String#split, convert to List using .toList, then pattern match on:
     //   case x :: xs => ???
@@ -68,8 +78,9 @@ object ControlStructuresHomework2 {
     // the import above will enable useful operations on Either-s such as `leftMap`
     // (map over the Left channel) and `merge` (convert `Either[A, A]` into `A`),
     // but you can also avoid using them using pattern matching.
-
-    ??? // implement using a for-comprehension
+    val command: Either[ErrorMessage, Command] = parseCommand(x)
+    val calculated: Either[ErrorMessage, Result] = calculate(command.getOrElse())
+    renderResult(calculated.getOrElse())
   }
 
   // This `main` method reads lines from stdin, passes each to `process` and outputs the return value to stdout
